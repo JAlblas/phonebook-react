@@ -1,16 +1,6 @@
 import { useState } from "react";
 
-const Filter = ({ handleFilterChange, filterText }) => {
-  return (
-    <div>
-      <form>
-        Filter persons with:
-        <br />
-        <input type="text" value={filterText} onChange={handleFilterChange} />
-      </form>
-    </div>
-  );
-};
+import Filter from './modules/Filter'
 
 const Form = ({
   addUser,
@@ -40,7 +30,7 @@ const Phonebook = ({ persons }) => {
   return (
     <div>
       {persons.map((person) => (
-        <Person person={person} id={person.name} />
+        <Person person={person} key={person.id} />
       ))}
     </div>
   );
