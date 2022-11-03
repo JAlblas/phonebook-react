@@ -19,20 +19,20 @@ const App = () => {
       })
   }, [])
 
-
-
-
   const addUser = (event) => {
     event.preventDefault();
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to the phonebook`);
     } else {
-      const newUser = { name: newName, number: newNumber, id: persons.length };
-      setPersons(persons.concat(newUser));
-    }
+      const newUser = { name: newName, number: newNumber, id: persons.length + 1 };
 
-    setNewName("");
-    setNewNumber("");
+      axios.post('http://localhost:3001/persons', newUser)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('');
+          setNewNumber('');
+        })
+    }
   };
 
   const handleNameChange = (event) => {
