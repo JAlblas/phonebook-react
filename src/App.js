@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from 'axios'
+
+import personService from './services/persons'
 
 import Filter from './modules/Filter'
 import Form from './modules/Form'
 import Phonebook from "./modules/Phonebook";
+
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,10 +14,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService.getAll()
+      .then(persons => {
+        setPersons(persons)
       })
   }, [])
 
@@ -26,9 +27,9 @@ const App = () => {
     } else {
       const newUser = { name: newName, number: newNumber, id: persons.length + 1 };
 
-      axios.post('http://localhost:3001/persons', newUser)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService.create(newUser)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('');
           setNewNumber('');
         })
