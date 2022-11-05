@@ -26,18 +26,20 @@ const App = () => {
 
     let existingUser = persons.find(person => person.name === newName)
     if (existingUser) {
-      const updatedUser = { ...existingUser, number: newNumber }
-      personService.update(existingUser.id, updatedUser)
-        .then(returnedPerson => {
-          setPersons(persons.map(person => person.id !== existingUser.id ? person : returnedPerson))
-          setNewName('');
-          setNewNumber('');
-        })
-        .catch(error => {
-          alert(
-            `Telephone number was not updated due to an error!`
-          )
-        })
+      if (window.confirm("Contact exists. Do you want to edit phone number?")) {
+        const updatedUser = { ...existingUser, number: newNumber }
+        personService.update(existingUser.id, updatedUser)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== existingUser.id ? person : returnedPerson))
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(error => {
+            alert(
+              `Telephone number was not updated due to an error!`
+            )
+          })
+      }
     } else {
       const newUser = { name: newName, number: newNumber, id: uuidv4() };
 
