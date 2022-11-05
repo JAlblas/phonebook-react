@@ -22,10 +22,22 @@ const App = () => {
   }, [])
 
   const addUser = (event) => {
-    console.log("ADD USER!")
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to the phonebook`);
+
+    let existingUser = persons.find(person => person.name === newName)
+    if (existingUser) {
+      const updatedUser = { ...existingUser, number: newNumber }
+      personService.update(existingUser.id, updatedUser)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== existingUser.id ? person : returnedPerson))
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => {
+          alert(
+            `Telephone number was not updated due to an error!`
+          )
+        })
     } else {
       const newUser = { name: newName, number: newNumber, id: uuidv4() };
 
@@ -34,6 +46,11 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('');
           setNewNumber('');
+        })
+        .catch(error => {
+          alert(
+            `Telephone number not added due to an error!`
+          )
         })
     }
   };
@@ -46,7 +63,7 @@ const App = () => {
         })
         .catch(error => {
           alert(
-            `the person with id: '${id}' was not deleted from server`
+            `The person with id: '${id}' was not deleted from server due to an error!`
           )
         })
     }
