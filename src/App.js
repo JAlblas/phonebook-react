@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 import personService from './services/persons'
 
@@ -21,11 +22,12 @@ const App = () => {
   }, [])
 
   const addUser = (event) => {
+    console.log("ADD USER!")
     event.preventDefault();
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to the phonebook`);
     } else {
-      const newUser = { name: newName, number: newNumber, id: persons.length + 1 };
+      const newUser = { name: newName, number: newNumber, id: uuidv4() };
 
       personService.create(newUser)
         .then(returnedPerson => {
@@ -36,19 +38,18 @@ const App = () => {
     }
   };
 
-  const removeUser = (id) => {
-    console.log("REMOVE USER!");
-    console.log(id);
-
-    personService.remove(id)
-      .then(removedUser => {
-        setPersons(persons.filter(p => p.id !== id))
-      })
-      .catch(error => {
-        alert(
-          `the person with id: '${id}' was not deleted from server`
-        )
-      })
+  const removeUser = (id, name) => {
+    if (window.confirm(`Are you sure you want to remove ${name}?`)) {
+      personService.remove(id)
+        .then(removedUser => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          alert(
+            `the person with id: '${id}' was not deleted from server`
+          )
+        })
+    }
   }
 
   const handleNameChange = (event) => {

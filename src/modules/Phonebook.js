@@ -6,7 +6,7 @@ const Phonebook = ({ persons, removeUser }) => {
             {persons.map((person) => (
                 <div>
                     <Person person={person} key={person.id} />
-                    <button onClick={() => removeUser(person.id)}>Delete</button>
+                    <button onClick={() => removeUser(person.id, person.name)}>Delete</button>
                     <hr />
                 </div>
             ))}
