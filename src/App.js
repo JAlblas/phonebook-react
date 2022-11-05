@@ -36,6 +36,21 @@ const App = () => {
     }
   };
 
+  const removeUser = (id) => {
+    console.log("REMOVE USER!");
+    console.log(id);
+
+    personService.remove(id)
+      .then(removedUser => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+      .catch(error => {
+        alert(
+          `the person with id: '${id}' was not deleted from server`
+        )
+      })
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
@@ -63,7 +78,9 @@ const App = () => {
         newNumber={newNumber}
       />
       <h3>Numbers</h3>
-      <Phonebook persons={visiblePersons} />
+      <Phonebook
+        persons={visiblePersons}
+        removeUser={removeUser} />
     </div>
   );
 };

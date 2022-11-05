@@ -1,10 +1,14 @@
 import Person from "./Person";
 
-const Phonebook = ({ persons }) => {
+const Phonebook = ({ persons, removeUser }) => {
     return (
         <div>
             {persons.map((person) => (
-                <Person person={person} key={person.id} />
+                <div>
+                    <Person person={person} key={person.id} />
+                    <button onClick={() => removeUser(person.id)}>Delete</button>
+                    <hr />
+                </div>
             ))}
         </div>
     );
