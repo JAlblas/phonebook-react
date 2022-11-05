@@ -6,6 +6,7 @@ import personService from './services/persons'
 import Filter from './modules/Filter'
 import Form from './modules/Form'
 import Phonebook from "./modules/Phonebook";
+import Notification from "./modules/Notification";
 
 
 const App = () => {
@@ -13,6 +14,8 @@ const App = () => {
   const [newFilter, setFilter] = useState("");
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('success')
 
   useEffect(() => {
     personService.getAll()
@@ -33,11 +36,23 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingUser.id ? person : returnedPerson))
             setNewName('');
             setNewNumber('');
+            setMessageType('success');
+            setMessage(
+              `Telephone number sucesfully added!`
+            )
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
           .catch(error => {
-            alert(
-              `Telephone number was not updated due to an error!`
+            setMessageType('error');
+            setMessage(
+              `Telephone number not edited due to an error!`
             )
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+
           })
       }
     } else {
@@ -48,11 +63,22 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('');
           setNewNumber('');
+          setMessageType('success');
+          setMessage(
+            `Telephone number added!`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
         .catch(error => {
-          alert(
+          setMessageType('error');
+          setMessage(
             `Telephone number not added due to an error!`
           )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
   };
@@ -62,11 +88,22 @@ const App = () => {
       personService.remove(id)
         .then(removedUser => {
           setPersons(persons.filter(p => p.id !== id))
+          setMessageType('success');
+          setMessage(
+            `Telephone number succesfully removed!`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
         .catch(error => {
-          alert(
+          setMessageType('error');
+          setMessage(
             `The person with id: '${id}' was not deleted from server due to an error!`
           )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
   }
@@ -87,9 +124,10 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <Filter handleFilterChange={handleFilterChange} filterText={newFilter} />
-      <h3>Add a new</h3>
+      <h1>Phonebook</h1>
+
+      <Notification message={message} type={messageType} />
+      <h2>Add a new</h2>
       <Form
         addUser={addUser}
         handleNameChange={handleNameChange}
@@ -97,6 +135,8 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         newNumber={newNumber}
       />
+      <br />
+      <Filter handleFilterChange={handleFilterChange} filterText={newFilter} />
       <h3>Numbers</h3>
       <Phonebook
         persons={visiblePersons}
