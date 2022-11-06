@@ -15,7 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState('success')
+  const [messageType, setMessageType] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -26,6 +26,10 @@ const App = () => {
 
   const addUser = (event) => {
     event.preventDefault();
+    if (newName == "" || newNumber == "") {
+      showMessage('You must enter a name and phone number', false)
+      return
+    }
 
     let existingUser = persons.find(person => person.name === newName)
     if (existingUser) {
@@ -36,23 +40,11 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingUser.id ? person : returnedPerson))
             setNewName('');
             setNewNumber('');
-            setMessageType('success');
-            setMessage(
-              `Telephone number sucesfully added!`
-            )
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
+            showMessage(`Telephone number sucesfully edited!`)
           })
           .catch(error => {
             setMessageType('error');
-            setMessage(
-              `Telephone number not edited due to an error!`
-            )
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-
+            showMessage(`Telephone number not edited due to an error!`, false)
           })
       }
     } else {
@@ -63,22 +55,10 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('');
           setNewNumber('');
-          setMessageType('success');
-          setMessage(
-            `Telephone number added!`
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          showMessage('Telephone number succesfully added!')
         })
         .catch(error => {
-          setMessageType('error');
-          setMessage(
-            `Telephone number not added due to an error!`
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          showMessage('Telephone number not added due to an error!', false)
         })
     }
   };
@@ -88,22 +68,10 @@ const App = () => {
       personService.remove(id)
         .then(removedUser => {
           setPersons(persons.filter(p => p.id !== id))
-          setMessageType('success');
-          setMessage(
-            `Telephone number succesfully removed!`
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          showMessage('Telephone number succesfully removed!`')
         })
         .catch(error => {
-          setMessageType('error');
-          setMessage(
-            `The person with id: '${id}' was not deleted from server due to an error!`
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          showMessage(`The person with id: '${id}' was not deleted from server due to an error!`, false)
         })
     }
   }
@@ -120,13 +88,23 @@ const App = () => {
     setFilter(event.target.value);
   }
 
+  const showMessage = (message, success = true) => {
+    setMessage(message);
+    setMessageType(success);
+
+    setTimeout(() => {
+      setMessage(null);
+      setMessageType(null);
+    }, 3000);
+  };
+
   const visiblePersons = newFilter.length !== 0 ? persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase())) : persons;
 
   return (
     <div>
       <h1>Phonebook</h1>
 
-      <Notification message={message} type={messageType} />
+      <Notification message={message} success={messageType} />
       <h2>Add a new</h2>
       <Form
         addUser={addUser}
