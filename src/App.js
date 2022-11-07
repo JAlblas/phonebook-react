@@ -26,7 +26,7 @@ const App = () => {
 
   const addUser = (event) => {
     event.preventDefault();
-    if (newName == "" || newNumber == "") {
+    if (newName === "" || newNumber === "") {
       showMessage('You must enter a name and phone number', false)
       return
     }
@@ -43,7 +43,6 @@ const App = () => {
             showMessage(`Telephone number sucesfully edited!`)
           })
           .catch(error => {
-            setMessageType('error');
             showMessage(`Telephone number not edited due to an error!`, false)
           })
       }
@@ -103,7 +102,6 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-
       <Notification message={message} success={messageType} />
       <h2>Add a new</h2>
       <Form
